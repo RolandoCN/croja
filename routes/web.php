@@ -127,4 +127,21 @@ Route::prefix('gestionServicios')->group(function(){
     Route::resource('/detalle','DetalleServicioController')->middleware('auth');
     Route::resource('/servicio','EmisionController')->middleware('auth');
 
+   Route::get('reportecarnet/{idpersona}', 'EmisionController@reportecarnet')->middleware('auth');
+
+
+});
+
+
+//***********************************GESTION VALIDACION ******************************************////////
+//RUTAS PARA LA GESTION DE SERVICIOS
+Route::prefix('validacion')->group(function(){
+    Route::resource('/carnet','ValidacionController');
+
+    Route::get('carnet/{idemision}', 'ValidacionController@carnet')->middleware('auth');
+   Route::get('reportecarnet/{idpersona}', 'ValidacionController@reportecarnet');
+  Route::get('/{busqueda?}/codigo','ValidacionController@codigo');
+
+
+
 });

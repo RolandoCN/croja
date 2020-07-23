@@ -47,6 +47,8 @@
                                     </div>
                                 </div>
                             </div>
+                            <input type="hidden" name="ver" value="{{session('estadoP')}}"id="sms">
+                            <input type="hidden" name="id" value="{{session('id')}}"id="persona">
                         @endif
 
                           <div class="form-group">
@@ -183,10 +185,10 @@
                                                     		@endforeach
                                                     	</ul>
                                                     </td> 
-                                                    <td align="right">${{$datos->subtotal}}</td>
-                                                    <td align="right">${{$datos->interes}}</td>
-                                                    <td align="right">${{$datos->descuento}}</td>
-                                                     <td align="right">${{$datos->valor_total}}</td>
+                                                    <td align="right">{{$datos->subtotal}}</td>
+                                                    <td align="right">{{$datos->interes}}</td>
+                                                    <td align="right">{{$datos->descuento}}</td>
+                                                     <td align="right">{{$datos->valor_total}}</td>
                                                       
                                                     <td class="paddingTR">
                                                         <center>
@@ -267,7 +269,8 @@
             $('.collapse-link').click();
             $('.datatable_wrapper').children('.row').css('overflow','inherit !important');
             $('.table-responsive').css({'padding-top':'12px','padding-bottom':'12px', 'border':'0','overflow-x':'inherit'});
-        });
+
+                  });
     </script>
 
 	<script >
@@ -352,6 +355,6 @@
     <script src="../vendors/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="../vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
     <!-- <script src="../vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script> -->
-    <script src="{{asset('/js/gestionEmision.js')}}"></script>
+    <script src="{{asset('/js/gestionEmision2.js')}}"></script>
    
 @endsection

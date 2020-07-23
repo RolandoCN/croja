@@ -1,89 +1,9 @@
-//ENVIAR PLAN CONTRATACION
-    $("#frm_Atención").on("submit", function(e){
-        e.preventDefault();
-        
-        if($('#method_Detalle').val()=='POST')
-        {
-          console.log('Guardar');
-          guardarAtencion();
-          
-        }
-        else{
-          console.log('editar');
-          editarAtencion();
-          $('#btn_medio_cancelar').addClass('hidden');
-
-        }
-    });
-
-
-
- function guardarAtencion() {
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-       
-        
-        var data=$("#frm_Atención").serialize();
-        $.ajax({
-            url:'/gestionServicios/servicio', // Url que se envia para la solicitud
-            method: 'POST',              // Tipo de solicitud que se enviará, llamado como método
-            data: data,               // Datos enviados al servidor, un conjunto de pares clave / valor (es decir, campos de formulario y valores)
-            dataType: 'json',
-            success: function(requestData)   // Una función a ser llamada si la solicitud tiene éxito
-            {
-                console.log(requestData);
-                //console.log(requestData);
-                $('#msmMedioV').html(`
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="nombre_menu"></label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                            <div class="alert alert-${requestData.estadoP} alert-dismissible fade in" id="idalert" role="alert" style="margin-bottom: 0;">
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-                                </button>
-                                <strong>Información: </strong> ${requestData.mensajePInfoAtención}
-                            </div>
-                        </div>
-                    `);
-
-                     limpiarCampos();
-                     $(location).attr('href','/gestionServicios/reportecarnet/'+requestData.id);
-
-                     vistacargando("M", "Espere...");  
-                     setTimeout(() => {
-                      vistacargando();
-                    }, 40000);    
-
-                    cargartabla();
-
-               }, error:function (requestData) {
-                console.log(requestData);
-            }
-            });
-       
-
-    }
-
-function limpiarCampos()
-{
-    $('#recibida').val('');
-    $('#total').val('');
-    $('#interes').val('');
-    $('#descuento').val('');
-
-    $('.option_persona').prop('selected',false); 
-    $("#cmb_persona").trigger("chosen:updated"); 
-
-    $('.option_servicio').prop('selected',false); 
-    $("#cmb_servicio").trigger("chosen:updated"); 
-
-}
 
  //obtener data para llenara lista de plan de contratacion
     function cargartabla() {
         var id=2;
-         $.get("/gestionServicios/servicio/"+id+"/edit", function (data) {
+         $.get("/validacion/carnet/"+id, function (data) {
+          console.log(data);
 
            var tabla = $('#datatable').DataTable({
          dom: ""

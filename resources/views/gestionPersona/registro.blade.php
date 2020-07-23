@@ -5,7 +5,7 @@
     <link href="../vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
     <!-- <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"> -->
     <link href="../vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
-     <link href="{{asset('vendors/iCheck/skins/flat/green.css')}}" rel="stylesheet">
+    <link href="{{asset('vendors/iCheck/skins/flat/green.css')}}" rel="stylesheet">
 
 
     <style type="text/css">

@@ -58,7 +58,7 @@ class EmisionController extends Controller
      */
     public function store(Request $request)
     {
-        try {
+        //try {
 
             // CREAMOS ARREGLO PARA ENVIAR A LA FUNCION A VALIDAR CARACTERES ESPECIALES
             $validaCE=array(
@@ -68,69 +68,63 @@ class EmisionController extends Controller
             );
 
             if(tieneCaracterEspecialRequest($validaCE)){
-                return back()->with(['mensajePInfoAtención'=>'No puede ingresar caracteres especiales','estadoP'=>'danger']);
+                return (['mensajePInfoAtención'=>'No puede ingresar caracteres especiales','estadoP'=>'danger']);
             };
              //dd($request->get('clave'));
 
-            $st=$request->get('total');
+            $st=$request->total;
             $subtotal=number_format($st, 2, '.', '');
             //dd($subtotal);
 
-            $int=$request->get('interes');
+            $int=$request->interes;
             $interes=number_format($int, 2, '.', '');
 
-            $des=$request->get('descuento');
+            $des=$request->descuento;
             $descuento=number_format($des, 2, '.', '');
                       
             $valor_total_aux=($subtotal+$interes)-$descuento;
             $valor_total=number_format($valor_total_aux, 2, '.', '');
 
-            if(is_null($request->get('cmb_persona')))
+            if(is_null($request->cmb_persona))
             {
-                return back()->with(['mensajePInfoAtención'=>'Seleccione un cliente','estadoP'=>'danger']);
+                return (['mensajePInfoAtención'=>'Seleccione un cliente','estadoP'=>'danger']);
 
             }
 
-            if(is_null($request->get('cmb_servicio')))
+            if(is_null($request->cmb_servicio))
             {
-                return back()->with(['mensajePInfoAtención'=>'Seleccione un servicio','estadoP'=>'danger']);
+                return (['mensajePInfoAtención'=>'Seleccione un servicio','estadoP'=>'danger']);
 
             }
-            if(is_null($request->get('recibida')))
+            if(is_null($request->recibida))
             {
-                return back()->with(['mensajePInfoAtención'=>'Seleccione la fecha de recibida','estadoP'=>'danger']);
+                return (['mensajePInfoAtención'=>'Seleccione la fecha de recibida','estadoP'=>'danger']);
 
             }
+
+            
+            $cryptarIdPersona=$request->cmb_persona;
+            $idpersonaPdf=base64_encode($cryptarIdPersona);
 
             //GUARDAMOS LA EMISION EN LA BASE DE DATOS
             $emision= new EmisionModel();
-            $emision->idpersona=$request->get('cmb_persona');
-            $emision->fecha_recibida=$request->get('recibida');
-            $emision->idservicio=$request->get('cmb_servicio');
+            $emision->idpersona=$request->cmb_persona;
+            $emision->fecha_recibida=$request->recibida;
+            $emision->idservicio=$request->cmb_servicio;
             $emision->valor_total=$valor_total;
             $emision->interes=$interes;
             $emision->subtotal=$subtotal;
             $emision->descuento=$descuento;
-            $emision->fecha_emision=date('d/m/Y');
+            $emision->fecha_emision=date('d/m/Y H:i:s');
             $emision->idusuario=auth()->User()->idusuario;
             $emision->estado="Activo";
            
                     
           
             if($emision->save()){
-            $consultaEmision=EmisionModel::find($emision->idemision);
-            $consultaEmision->codigo=md5($emision->idemision);
-            $consultaEmision->save();
-
-            $cryparIdEmision=md5($emision->idemision);
-
-
+            
             $idemision=$emision->idemision;
-            //$cryparIdEmision=base64_encode($idemision);
-
-
             $idservicio=$emision->idservicio;
-
             $detalleservicio=DetalleServicioModel::where('idservicio',$idservicio)->where('estado','Activo')->get();
             foreach ($detalleservicio as $key => $value) {
                 $guardaDetalleEmision=new DetalleEmisionModel();
@@ -150,31 +144,23 @@ class EmisionController extends Controller
                 
          // ]);
 
-           return back()->with(['mensajePInfoAtención'=>'Registro exitoso','estadoP'=>'success','id'=>$cryparIdEmision]);
+           return (['mensajePInfoAtención'=>'Registro exitoso','estadoP'=>'success','id'=>$idpersonaPdf]);
             }else{
-                return back()->with(['mensajePInfoAtención'=>'No se pudo realizar el registro','estadoP'=>'danger']);
+                return (['mensajePInfoAtención'=>'No se pudo realizar el registro','estadoP'=>'danger']);
             }
-        } catch (\Throwable $th) {
-            Log::error("Error get Request Id ".$th->getMessage());
-            return back()->with(['mensajePInfoAtención'=>'Error el realizar el registro','estadoP'=>'danger']);
-        }
+        // } catch (\Throwable $th) {
+        //     Log::error("Error get Request Id ".$th->getMessage());
+        //     return back()->with(['mensajePInfoAtención'=>'Error el realizar el registro','estadoP'=>'danger']);
+        // }
 
     }
 
-    public function reportecarnet($idemision)
+    public function reportecarnet($idpersona)
     {
-         
-        // $desincriptarIdEmision=base64_decode($idemision);
-//         $ObtenerIdPersona=EmisionModel::where('idemision',$desincriptarIdEmision)->first();
-
-         $ObtenerIdPersona=EmisionModel::where('codigo',$idemision)->first();
-
-         //dd($ObtenerIdPersona);
-         $idpersona=$ObtenerIdPersona->idpersona;
-         //dd($idpersona);
-         $fecha=$ObtenerIdPersona->fecha_emision;
-         
-         $datosPersonaCarnet=PersonaModel::where('idpersona',$idpersona)->first();
+         //dd($idpersona);       
+         $desincriptarIdPersona=base64_decode($idpersona);
+         //dd($desincriptarIdPersona);
+         $datosPersonaCarnet=PersonaModel::where('idpersona',$desincriptarIdPersona)->first();
         
          $nombres=$datosPersonaCarnet->nombres;
          $apellidos=$datosPersonaCarnet->apellidos;
@@ -184,7 +170,7 @@ class EmisionController extends Controller
          //dd($factor_du);
 
 
-         $pdf = PDF::loadView('gestionServicios.carnettiposangre',['nombres'=>$nombres,'apellidos'=>$apellidos,'factor'=>$factor,'grupo'=>$grupo,'factor_du'=>$factor_du,'fecha'=>$fecha,'idemision'=>$idemision]);
+         $pdf = PDF::loadView('gestionServicios.carnettiposangre',['nombres'=>$nombres,'apellidos'=>$apellidos,'factor'=>$factor,'grupo'=>$grupo,'factor_du'=>$factor_du]);
            // $pdf->setPaper("A4", "portrait");
 
          //$pdf->setPaper([0, 0, 141.732,  85.0394]);// 5x3
@@ -194,7 +180,7 @@ class EmisionController extends Controller
 
 
          
-        return $pdf->download('carnet_tipo_sangre'.$idemision.'.pdf');
+        return $pdf->download('carnet_tipo_sangre'.$idpersona.'.pdf');
         //return $pdf->stream();
 
     }
@@ -205,7 +191,23 @@ class EmisionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-   
+    public function show($id)
+    {
+        try {
+            $id=decrypt($id);
+             $canton=CantonModel::where('idprovincia',$id)->get();
+            return response()->json([
+                'error'=>false,
+                'resultado'=>$canton
+            ], 200);
+        } catch (\Throwable $th) {
+            Log::error("Error get Request Id ".$th->getMessage());
+            return response()->json([
+                'error'=>true,
+                'message'=>$th->getMessage()
+            ], 500);
+        }
+    }
 
     /**
      * Show the form for editing the specified resource.
@@ -213,7 +215,35 @@ class EmisionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    public function edit($id)
+    {
+        try {
+            $idcanton = $id;
+           $listaEmision = EmisionModel::with('persona','servicio')->where('estado','Activo')->get();
+            return response()->json($listaEmision);
+
+
+        } catch (\Throwable $th) {
+            Log::error("Error get Request Id ".$th->getMessage());
+            return response()->json([
+                'error'=>true,
+                'message'=>$th->getMessage()
+            ], 500);
+        }
     
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -228,7 +258,7 @@ class EmisionController extends Controller
         );
         //Validar si tiene caracteres especiales
         if(tieneCaracterEspecialRequest($DesencriptarID)){
-            return back()->with(['mensajePInfoAtención'=>'No puede ingresar caracteres especiales','estadoP'=>'danger']);
+            return (['mensajePInfoAtención'=>'No puede ingresar caracteres especiales','estadoP'=>'danger']);
         };
         //BUSCAMOS EL REGISTRO
         $idemisionGet=decrypt($id);
@@ -237,7 +267,7 @@ class EmisionController extends Controller
         $emision->estado="Eliminado";
         if($emision->save())
         {
-             return back()->with(['mensajePInfoAtención'=>'El registro fué eliminado','estadoP'=>'success']);
+             return (['mensajePInfoAtención'=>'El registro fué eliminado','estadoP'=>'success']);
         }
     }
 }

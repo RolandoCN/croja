@@ -20,7 +20,7 @@
     <!-- Font Awesome -->
       <link href="{{ asset('/vendors/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
     <!-- NProgress -->
-      <link href="{{ asset('/vendors/nprogress/nprogress.css') }}" rel="stylesheet">
+    {{--   <link href="{{ asset('/vendors/nprogress/nprogress.css') }}" rel="stylesheet"> --}}
     <!-- jQuery custom content scroller -->
       <link href="{{ asset('/vendors/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.min.css') }}" rel="stylesheet">
     <!-- Custom Theme Style -->
@@ -57,11 +57,11 @@
                   <img class="imagen_nav soloMobil" src="{{asset('/images/img.jpg')}}" alt="">
                 @else
                   @if(Auth::user()->sexo=="Masculino")
-                      <img class="imagen_nav soloMobil" src="{{asset('/images/user.png')}}" alt="">
+                      <img class="imagen_nav soloMobil" src="{{asset('/images/img.jpg')}}" alt="">
                   @elseif(Auth::user()->sexo=="Femenino")
-                      <img class="imagen_nav soloMobil" src="{{asset('/images/user_fem.png')}}" alt="">
+                      <img class="imagen_nav soloMobil" src="{{asset('/images/img.jpg')}}" alt="">
                   @else
-                      <img class="imagen_nav soloMobil" src="{{asset('/images/negocio.png')}}" alt="">
+                      <img class="imagen_nav soloMobil" src="{{asset('/images/img.jpg')}}" alt="">
                   @endif
                 @endguest
                    <span  style="font-size: 18px; font-family: bold">CRUZ ROJA</span>

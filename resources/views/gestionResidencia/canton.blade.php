@@ -66,7 +66,7 @@
                                 <select data-placeholder="Seleccione una provincia"  name="cmb_canton_provincia" id="cmb_canton_provincia"  class="chosen-select form-control" tabindex="5">
                                     @if(isset($listaProvincias))
                                         @foreach($listaProvincias as $provincia) 
-                                          <option value=""></option>
+                                          
                                             <option class="option_canton_provincia" value="{{$provincia->idprovincia}}">{{$provincia->detalle}}</option>
                                         @endforeach
                                     @endif
@@ -150,7 +150,7 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $("#datatable").DataTable({
-        "language": {
+            "language": {
             "lengthMenu": "Mostrar _MENU_ registros por pagina",
             "zeroRecords": "No se encontraron resultados en su busqueda",
             "searchPlaceholder": "Buscar registros",

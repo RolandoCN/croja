@@ -129,23 +129,7 @@
 
 <script type="text/javascript">
         $(document).ready(function () {
-        // $('.button').on('click', function(){
-        // //Añadimos la imagen de carga en el contenedor
-        // $('#content').html('<div class="loader"></div>');
-
-        
-        
-    //}); 
-
-
-//        $(window).load(function() {
-//     $(".loader").fadeOut("slow");
-// });
-
-
-  
-
-            $("#datatable").DataTable({
+        $("#datatable").DataTable({
         "language": {
             "lengthMenu": "Mostrar _MENU_ registros por pagina",
             "zeroRecords": "No se encontraron resultados en su busqueda",
